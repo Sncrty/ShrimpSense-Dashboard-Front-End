@@ -1,0 +1,21 @@
+Quick integration notes for backend devs
+
+POST /api/analyze accepts multipart/form-data with field image and returns JSON:
+
+{
+  "id":"abc123",
+  "timestamp":"2025-09-30T08:30:00Z",
+  "shrimpCount": 5000,
+  "biomass": "7.5 g",
+  "feedRecommendation": "11.25 g/day",
+  "protein_g": 6.19,
+  "filler_g": 5.06,
+  "imageUrl": "https://.../uploaded.jpg"
+}
+
+
+The front-end adapter will normalize fields to the shape used in the UI.
+
+GET /api/history returns an array of the same objects above. The frontend will adapt each item.
+
+The analyzeImage() function emits an analysis:complete event after successfully receiving the backend response so any listening page (Results, History) gets updated immediately.

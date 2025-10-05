@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind CSS Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              emerald: {
+                900: "#0F3C32",
+              },
+              coral: {
+                500: "#ff7f50",
+              },
+            },
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-blue-600 mb-8">Tailwind CSS Test</h1>
+
+        <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Sample Classes from Your Project</h2>
+            <div class="flex items-center gap-2 mb-4">
+                <div class="w-6 h-6 border-4 border-slate-300 border-t-sky-500 rounded-full animate-spin"></div>
+                <span class="text-slate-600 text-sm">Loading spinner</span>
+            </div>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                Sample Button
+            </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-emerald-900 text-white p-4 rounded">
+                <h3 class="font-bold">Emerald 900</h3>
+                <p class="text-sm">Custom color from config</p>
+            </div>
+            <div class="bg-coral-500 text-white p-4 rounded">
+                <h3 class="font-bold">Coral 500</h3>
+                <p class="text-sm">Custom color from config</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
