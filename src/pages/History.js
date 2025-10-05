@@ -1,20 +1,55 @@
+// src/pages/History.js
 import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 
-/**
- * History shows a list of saved results from localStorage.
- * Each entry shows date/time and a small chevron to expand the result brief (cards like Results).
- */
-
 const STORAGE_KEY = "shrimp_history_v1";
+
+function seedIfEmpty() {
+  const exists = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  if (exists.length) return;
+
+  const samples = [
+    {
+      id: "r-" + (Date.now() - 1000 * 60 * 60 * 24 * 2),
+      fileName: "pond_2025-09-30.jpg",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
+      totalPL: 5000,
+      biomass: "7.5",
+      feedRecommendation: "11.25",
+      breakdown: { protein: "6.19", filler: "5.06" },
+    },
+    {
+      id: "r-" + (Date.now() - 1000 * 60 * 60 * 24 * 10),
+      fileName: "pond_2025-06-03.jpg",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 10).toISOString(),
+      totalPL: 3200,
+      biomass: "4.8",
+      feedRecommendation: "8.00",
+      breakdown: { protein: "4.40", filler: "3.60" },
+    },
+    {
+      id: "r-" + (Date.now() - 1000 * 60 * 60 * 24 * 60),
+      fileName: "pond_2025-01-28.jpg",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 60).toISOString(),
+      totalPL: 1500,
+      biomass: "1.9",
+      feedRecommendation: "3.75",
+      breakdown: { protein: "2.06", filler: "1.69" },
+    },
+  ];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(samples));
+}
 
 export default function History() {
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    seedIfEmpty();
     const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    // order newest first
+    all.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
     setItems(all);
   }, []);
 
@@ -24,25 +59,25 @@ export default function History() {
 
   if (!items.length) {
     return (
-      <div className="min-h-screen bg-white p-8 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-slate-700 mb-4">No history yet. Process an image to create your first result.</p>
-          <button onClick={() => navigate("/")} className="px-4 py-2 bg-[#0077b6] text-white rounded">Get started</button>
+      <div className="min-h-screen bg-white p-6 flex items-center justify-center">
+        <div className="text-center text-slate-700">
+          <p className="mb-4">No history yet. Process an image to create your first result.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white p-6 md:p-12">
-      <div className="max-w-3xl mx-auto">
-        <h2 className="text-2xl font-semibold text-slate-800 mb-6">History</h2>
+    <div className="min-h-screen bg-white p-4 sm:p-6">
+      <div className="max-w-xl mx-auto">
+        <h2 className="text-2xl font-semibold text-slate-800 mb-4">History</h2>
 
         <div className="space-y-4">
           {items.map(item => {
             const created = new Date(item.timestamp);
             const dateStr = created.toLocaleDateString();
             const timeStr = created.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
             return (
               <div key={item.id} className="border rounded-lg overflow-hidden bg-white shadow-sm">
                 <button
@@ -55,13 +90,13 @@ export default function History() {
                     <div className="text-base font-medium text-slate-800">{timeStr}</div>
                   </div>
                   <div className="text-slate-600">
-                    <Icon icon={item._open ? "mdi:chevron-up" : "mdi:chevron-down"} width="28" height="28" />
+                    <Icon icon={item._open ? "mdi:chevron-up" : "mdi:chevron-down"} width="20" />
                   </div>
                 </button>
 
                 {item._open && (
                   <div className="px-4 pb-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div className="border rounded p-3 text-center">
                         <div className="text-sm text-slate-500">Total PL Shrimp Count</div>
                         <div className="text-xl font-semibold text-teal-700">{item.totalPL.toLocaleString()}</div>
@@ -78,7 +113,6 @@ export default function History() {
 
                     <div className="mt-4 flex gap-4 items-start">
                       <div className="w-28">
-                        {/* simple pie small */}
                         <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-label="feed pie">
                           <circle cx="50" cy="50" r="40" fill="#fff" />
                           <circle cx="50" cy="50" r="34" fill="transparent"
@@ -97,7 +131,6 @@ export default function History() {
                     <div className="mt-4 flex gap-3">
                       <button onClick={() => navigate(`/results?id=${item.id}`)} className="px-3 py-1 bg-[#0077b6] text-white rounded">View result</button>
                       <button onClick={() => {
-                        // delete
                         const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]").filter(x=>x.id!==item.id);
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
                         setItems(all);
